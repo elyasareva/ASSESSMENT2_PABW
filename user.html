@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notifikasi</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Notifications</h1>
+    <table border="1" id="notificationsTable">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Username</th>
+                <th>Bukti Pembayaran</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: 'getnotifications.php', 
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var notificationsTable = $('notificationsTable tbody');
+                    notificationsTable.empty();
+                    
+                    $.each(data, function(index, notifications) {
+                        notificationsTable.append('<tr>' +
+                            '<td>' + notifications.id + '</td>' +
+                            '<td>' + notifications.username + '</td>' +
+                            '<td>' + notifications.bukti_pembayaran + '</td>' +
+                            '<td>' + notifications.status + '</td>' +
+                            '<td><button onclick="deleteNotifications(' + notifications.id + ')">Hapus Data</button></td>' +
+                        '</tr>');
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error: ' + error);
+                    alert('Gagal mengelola notifikasi.');
+                }
+            });
+        });
+
+        function deleteNotifications(id) {
+            $.ajax({
+                url: 'deletenotifications.php',
+                type: 'GET',
+                data: { id: id },
+                success: function(response) {
+                    alert(response);
+                    location.reload(); 
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error: ' + error);
+                    alert('Gagal menghapus data.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
